@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+@font-face {
+  font-family: "Radikal";
+  src: url("/fonts/Nootype - Radikal.otf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Radikal-bold";
+  src: url("/fonts/Nootype - Radikal Bold.otf") format("truetype");
+  font-weight: bold;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Radikal-light";
+  src: url("/fonts/Nootype - Radikal Light.otf") format("truetype");
+  font-weight: lighter;
+  font-style: normal;
+}
+
+html{
+  scroll-behavior: smooth
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: "Radikal", sans-serif;
+}
+
+h1.main-title, img.main-title, h2 {
+  margin-top: 25px;
+}
+
+div.table-div, div.text-content, div.plot-box {
+  margin-bottom: 5%;
+}
+
+p, ul{
+  font-family: "Radikal-light", sans-serif;
+}
+
+ul {
+  margin-left: 40px;
+}
+
+a.kaggle-link {
+  text-decoration: underline;
+  color:#05f2ff;
+}
+
+footer.footer-main {
+  margin-top: 75px;
+}
+
+h2.insights {
+  margin: 50px;
+}
