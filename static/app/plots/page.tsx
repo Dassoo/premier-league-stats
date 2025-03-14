@@ -1,24 +1,27 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from 'next/link';
 import { ScatterChart, Scatter, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend, CartesianGrid } from "recharts";
 import { CustomDot } from "@/utils/charts";
+import { TooltipProps, TeamStats } from "@/utils/helpers";
 
 export default function Plots() {
-    const [year, setYear] = useState(new Date().getFullYear());
-    const [stats, setStats] = useState([]);
-    const [selectedTeams, setSelectedTeams] = useState([]);
+    const [year] = useState(new Date().getFullYear());
+    const [stats, setStats] = useState<TeamStats[]>([]);
+    const [selectedTeams, setSelectedTeams] = useState<string[]>([]);
     const [selectedStat, setSelectedStat] = useState("goals");
     const [showLogos, setShowLogos] = useState(true);
 
     // Variables for second plot
-    const [selectedSeason, setSelectedSeason] = useState("2017/2018");
-    const [selectedStat1, setSelectedStat1] = useState("goals");
-    const [selectedStat2, setSelectedStat2] = useState("total_pass");
+    const [selectedSeason, setSelectedSeason] = useState<string>("goals");
+    const [selectedStat1, setSelectedStat1] = useState<string>("goals");
+    const [selectedStat2, setSelectedStat2] = useState<string>("total_pass");
+
 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/api/stats/data/?season=${selectedSeason}`)
             .then((res) => res.json())
-            .then((data) => {
+            .then((data: TeamStats[]) => {
                 console.log("Dati ricevuti:", data);
                 setStats(data);
             })
@@ -73,14 +76,16 @@ export default function Plots() {
     // Map for ScatterChart custom tooltip
     const statLabelMap = Object.fromEntries(statOptions.map(({ value, label }) => [value, label]));   
 
-     // Organize data for the first plot (teams over multiple seasons)
-     const structuredData = seasons.map((season) => {
-        let seasonData = { season };
+    // Organize data for the first plot (teams over multiple seasons)
+    const structuredData = seasons.map((season) => {
+        const sData: Record<string, string | number | null> = { season };
+    
         selectedTeams.forEach((team) => {
             const teamData = stats.find((entry) => entry.team === team && entry.season === season);
-            seasonData[team] = teamData ? teamData[selectedStat] : null;
+            sData[team] = teamData ? teamData[selectedStat] : null;
         });
-        return seasonData;
+    
+        return sData;
     });
 
     // Organize data for the second plot (all teams in a selected season)
@@ -88,20 +93,21 @@ export default function Plots() {
         .filter((entry) => entry.season === selectedSeason)
         .map((entry) => ({
             team: entry.team,
-            x: entry[selectedStat1] || 0,
-            y: entry[selectedStat2] || 0,
+            x: entry[selectedStat1] as number || 0,
+            y: entry[selectedStat2] as number || 0,
         }))
-        .sort((a,b) => a.x - b.x);
+        .sort((a, b) => a.x - b.x);
+
 
     // Team selection
-    const handleTeamSelection = (team) => {
+    const handleTeamSelection = (team: string) => {
         setSelectedTeams((prev) =>
             prev.includes(team) ? prev.filter((t) => t !== team) : [...prev, team]
         );
     };
+    
 
-    // Custom Tooltip for ScatterChart
-    const CustomTooltip = ({ active, payload }) => {
+    const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
             return (
@@ -117,24 +123,25 @@ export default function Plots() {
     
     return (
         <div className="min-h-screen bg-gradient-to-b from-[#1a011c] to-purple-950 text-white flex flex-col items-center p-6 font-[Radikal-bold]">
+            
             {/* Navbar */}
             <nav className="flex items-center justify-between flex-wrap bg-transparent p-6 w-full max-w-6xl">
                 <div className="flex items-center flex-shrink-0 text-white">
                     <img src="/logos/premier_league.png" alt="Premier League" className="w-20 h-20 object-contain brightness-200" />
-                    <a href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</a>
+                    <Link href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</Link>
                 </div>
 
                 <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                     <div className="text-md lg:flex-grow text-right">
-                        <a href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        <Link href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Standings
-                        </a>
-                        <a href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        </Link>
+                        <Link href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Stats
-                        </a>
-                        <a href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
+                        </Link>
+                        <Link href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
                             Plots
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </nav>
@@ -286,12 +293,12 @@ export default function Plots() {
                     <ResponsiveContainer width="100%" height="100%">
                     <ScatterChart>
                         <CartesianGrid strokeDasharray="3 3" stroke="#444" />
-                        <XAxis dataKey="x" name={statLabelMap[selectedStat1]} stroke="white" type="number" tickFormatter={(tick) => Math.round(tick)} 
+                        <XAxis dataKey="x" name={statLabelMap[selectedStat1]} stroke="white" type="number" tickFormatter={(tick: any) => tick.toString()} 
                             tickCount={10} />
-                        <YAxis dataKey="y" name={statLabelMap[selectedStat2]} stroke="white" type="number" tickFormatter={(tick) => Math.round(tick)} 
+                        <YAxis dataKey="y" name={statLabelMap[selectedStat2]} stroke="white" type="number" tickFormatter={(tick: any) => tick.toString()} 
                             tickCount={5}/>
                         <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: "3 3" }} />
-                        <Scatter name="Teams" data={filteredData} fill="#8884d8" shape={(props) => <CustomDot {...props} />} />
+                        <Scatter name="Teams" data={filteredData} fill="#8884d8" shape={(props: any) => <CustomDot {...props} />} />
                     </ScatterChart>
                     </ResponsiveContainer>
                 ) : (

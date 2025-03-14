@@ -1,20 +1,23 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from 'next/link';
+import { TeamStats } from "@/utils/helpers";
 
 export default function Home() {
-    const [year, setYear] = useState(new Date().getFullYear());
-    const [stats, setStats] = useState([]);
-    const [selectedSeason, setSelectedSeason] = useState("2017-2018");
-    const [searchQuery, setSearchQuery] = useState(""); // Team filter
-    const [selectedCategory, setSelectedCategory] = useState("offensive"); // Default category
-    const [sortColumn, setSortColumn] = useState(null);
-    const [sortOrder, setSortOrder] = useState("desc"); // Default in ordine decrescente
+    const [year] = useState<number>(new Date().getFullYear());
+    const [stats, setStats] = useState<TeamStats[]>([]);
+    const [selectedSeason, setSelectedSeason] = useState<string>("2017-2018");
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [selectedCategory, setSelectedCategory] = useState<string>("offensive");
+    const [sortColumn, setSortColumn] = useState<string | null>(null);
+    const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+    type CategoryKeys = keyof typeof categories;
 
 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/api/stats/data/?season=${selectedSeason}`)
             .then((res) => res.json())
-            .then((data) => {
+            .then((data: TeamStats[]) => {
                 console.log("Dati ricevuti:", data);
                 setStats(data);
             })
@@ -73,25 +76,26 @@ export default function Home() {
     };
 
 
-    // Funzione per ordinare i dati
-    const handleSort = (column) => {
+    // Sort data
+    const handleSort = (column: keyof TeamStats) => {
         if (sortColumn === column) {
-            setSortOrder(sortOrder === "asc" ? "desc" : "asc"); // Se la colonna è già selezionata, cambia l'ordine
+            setSortOrder(sortOrder === "asc" ? "desc" : "asc");
         } else {
-            setSortColumn(column);
-            setSortOrder("desc"); // Default discendente
+            setSortColumn(column as string);
+            setSortOrder("desc");
         }
     };
 
-    // Filtraggio e ordinamento dati
+    // Filter and order stats
     const filteredStats = stats
         .filter((team) => team.season === selectedSeason)
         .filter((team) => team.team.toLowerCase().includes(searchQuery.toLowerCase()))
         .sort((a, b) => {
-            if (!sortColumn) return 0; // Nessun ordinamento iniziale
-            const valueA = a[sortColumn] || 0;
-            const valueB = b[sortColumn] || 0;
+            if (!sortColumn) return 0; // No initial sort
+            const valueA = Number(a[sortColumn as keyof TeamStats]) || 0;
+            const valueB = Number(b[sortColumn as keyof TeamStats]) || 0;
             return sortOrder === "asc" ? valueA - valueB : valueB - valueA;
+
         });
 
     return (
@@ -101,20 +105,20 @@ export default function Home() {
             <nav className="flex items-center justify-between flex-wrap bg-transparent p-6 w-full max-w-6xl">
                 <div className="flex items-center flex-shrink-0 text-white">
                     <img src="/logos/premier_league.png" alt="Premier League" className="w-20 h-20 object-contain brightness-200" />
-                    <a href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</a>
+                    <Link href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</Link>
                 </div>
 
                 <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                     <div className="text-md lg:flex-grow text-right">
-                        <a href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        <Link href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Standings
-                        </a>
-                        <a href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        </Link>
+                        <Link href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Stats
-                        </a>
-                        <a href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
+                        </Link>
+                        <Link href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
                             Plots
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </nav>
@@ -175,13 +179,13 @@ export default function Home() {
                         <tr className="text-gray-300">
                             <th className="p-3">#</th>
                             <th className="p-3 text-left min-w-xs">Team</th>
-                            {categories[selectedCategory].map((stat) => (
+                            {categories[selectedCategory as CategoryKeys].map((stat) => (
                                 <th
                                     key={stat}
                                     className="p-3 text-center cursor-pointer hover:text-purple-300"
                                     onClick={() => handleSort(stat)}
                                 >
-                                    {columnNames[stat] || stat}{" "}
+                                    {columnNames[stat as keyof typeof columnNames] || stat}{" "}
                                     {sortColumn === stat && (sortOrder === "asc" ? "▲" : "▼")}
                                 </th>
                             ))}
@@ -199,7 +203,7 @@ export default function Home() {
                                             <img src={logoPath} alt={team.team} className="w-8 h-8 object-contain" />
                                             {team.team}
                                         </td>
-                                        {categories[selectedCategory].map((stat) => (
+                                        {categories[selectedCategory as CategoryKeys].map((stat) => (
                                             <td key={stat} className="p-3 text-center">{team[stat]}</td>
                                         ))}
                                     </tr>
@@ -207,7 +211,7 @@ export default function Home() {
                             })
                         ) : (
                             <tr>
-                                <td colSpan="10" className="p-6 text-center text-gray-400">Loading data...</td>
+                                <td className="p-6 text-center text-gray-400">Loading data...</td>
                             </tr>
                         )}
                     </tbody>

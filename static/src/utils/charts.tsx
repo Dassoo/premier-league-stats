@@ -1,4 +1,4 @@
-export const renderCustomAxisTick = (props) => {
+export const renderCustomAxisTick = (props: any) => {
     const { x, y, payload } = props;
     const teamName = payload.value;
     const logoPath = `/logos/${teamName.toLowerCase().replace(/\s+/g, "_")}.png`;
@@ -13,7 +13,7 @@ export const renderCustomAxisTick = (props) => {
 };
 
 // Custom dot with logo
-export const CustomDot = (props) => {
+export const CustomDot = (props: any) => {
     const { cx, cy, payload, dataKey } = props;
     if (!cx || !cy) return null;
 

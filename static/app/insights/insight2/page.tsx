@@ -1,22 +1,22 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from 'next/link';
 import { Scatter, ScatterChart, ComposedChart, Line, LineChart, Legend, CartesianGrid, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { renderCustomAxisTick, CustomDot } from "@/utils/charts";
-import { filterStandings } from "@/utils/helpers";
-
+import { TeamStats, TooltipProps, filterStandings } from "@/utils/helpers";
 
 export default function Home() {
-    const [year, setYear] = useState(new Date().getFullYear());
-    const [stats, setStats] = useState([]);
-    const [selectedSeason, setSelectedSeason] = useState("2017-2018");
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedTeams, setSelectedTeam] = useState(["Manchester United", "Manchester City"]);
-    const [showLogos, setShowLogos] = useState(true);
+    const [year] = useState(new Date().getFullYear());
+    const [stats, setStats] = useState<TeamStats[]>([]);
+    const [selectedSeason] = useState("2017-2018");
+    const [searchQuery] = useState("");
+    const [selectedTeams] = useState(["Manchester United", "Manchester City"]);
+    const [showLogos] = useState(true);
 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/api/stats/data/?season=${selectedSeason}`)
             .then((res) => res.json())
-            .then((data) => {
+            .then((data: TeamStats[]) => {
                 console.log("Received data:", data);
 
                 const updatedData = data.map(team => ({
@@ -35,12 +35,14 @@ export default function Home() {
     const seasons = [...new Set(stats.map((team) => team.season))].sort();
 
     const structuredData = seasons.map((season) => {
-        let seasonData = { season };
+        const sData: Record<string, string | number | null> = { season };
+    
         selectedTeams.forEach((team) => {
             const teamData = stats.find((entry) => entry.team === team && entry.season === season);
-            seasonData[team] = teamData ? teamData["points"] : null;
+            sData[team] = teamData ? teamData["points"] : null;
         });
-        return seasonData;
+    
+        return sData;
     });
 
     const seasonData = stats
@@ -51,7 +53,7 @@ export default function Home() {
             backward_pass: Number(team.backward_pass),
     }));
 
-    const CustomTooltip = ({ active, payload }) => {
+    const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload; // Get the whole team data object
 
@@ -73,7 +75,7 @@ export default function Home() {
         return null;
     };
 
-    const CustomTooltip2 = ({ active, payload }) => {
+    const CustomTooltip2: React.FC<TooltipProps> = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
 
@@ -100,20 +102,20 @@ export default function Home() {
             <nav className="flex items-center justify-between flex-wrap bg-transparent p-6 w-full max-w-6xl">
                 <div className="flex items-center flex-shrink-0 text-white">
                     <img src="/logos/premier_league.png" alt="Premier League" className="w-20 h-20 object-contain brightness-200" />
-                    <a href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</a>
+                    <Link href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</Link>
                 </div>
 
                 <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                     <div className="text-md lg:flex-grow text-right">
-                        <a href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        <Link href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Standings
-                        </a>
-                        <a href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        </Link>
+                        <Link href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Stats
-                        </a>
-                        <a href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
+                        </Link>
+                        <Link href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
                             Plots
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </nav>
@@ -121,7 +123,7 @@ export default function Home() {
             {/* Title */}
             <div className="flex items-center gap-4 mb-3">
                 <h1 className="text-2xl font-bold text-center text-white main-title">
-                    Manchester City's slow but steady emergence
+                    Manchester City&apos;s slow but steady emergence
                 </h1>
             </div>
             <p className="flex text-gray-300 items-center gap-4 mb-6 max-w-4xl">
@@ -175,29 +177,29 @@ export default function Home() {
                     </LineChart>
                 </ResponsiveContainer>
             </div>
-            <p className="mt-1 text-center text-white text-sm">The "Turning Point": as one Manchester side starts declining, the other one rises</p>
+            <p className="mt-1 text-center text-white text-sm">The Turning Point: as one Manchester side starts declining, the other one rises</p>
 
             <div className="max-w-4xl text-gray-300 text-lg leading-relaxed">    
                 <p className="mt-6">
-                    Manchester City’s rise to dominance began with the unforgettable 2011-12 season. 
+                    Manchester City&apos;s rise to dominance began with the unforgettable 2011-12 season. 
                     Under Roberto Mancini, City won their first Premier League title in great fashion, 
                     overcoming an eight-point deficit in the final six games.
                 </p>
                 <p className="mt-2">
-                    Tactically, Mancini’s City was built on a solid defensive structure, conceding only 
+                    Tactically, Mancini&apos;s City was built on a solid defensive structure, conceding only 
                     29 goals throughout the league campaign — the fewest in the division. The center-back 
                     partnership of Vincent Kompany and Joleon Lescott provided stability, while Joe Hart kept 
                     17 clean sheets, earning the Premier League Golden Glove.
                 </p>
                 <p className="mt-2">
-                    In possession, City’s midfield was orchestrated by David Silva and Yaya Touré, who combined 
+                    In possession, City&apos;s midfield was orchestrated by David Silva and Yaya Touré, who combined 
                     for 22 assists and controlled the tempo of games. Touré, in particular, played a box-to-box 
                     role, contributing both defensively and in attack with his 6.7 progressive carries per game.
                 </p>
                 <p className="mt-2">
-                    City’s attack, led by Sergio Agüero, Edin Džeko, and Mario Balotelli, was the most potent in 
+                    City&apos;s attack, led by Sergio Agüero, Edin Džeko, and Mario Balotelli, was the most potent in 
                     the league, scoring 93 goals. Agüero, in his debut season, netted 23 goals, supported by 
-                    Balotelli’s efficiency—scoring a goal every 134 minutes. City’s pressing intensity was among 
+                    Balotelli&apos;s efficiency—scoring a goal every 134 minutes. City&apos;s pressing intensity was among 
                     the highest in the league, averaging 8.9 opposition passes per defensive action (PPDA), forcing 
                     turnovers and launching quick attacks.
                 </p>
@@ -226,7 +228,7 @@ export default function Home() {
                     </ComposedChart>
                 </ResponsiveContainer>
             </div>
-            <p className="mt-1 text-center text-white text-sm">Manchester City's first title, Top 8 standings - PL 2011-2012</p>
+            <p className="mt-1 text-center text-white text-sm">Manchester City&apos;s first title, Top 8 standings - PL 2011-2012</p>
 
             <div className="max-w-4xl text-gray-300 text-lg leading-relaxed">
                 <h3 className="text-xl text-white mt-10">Consolidation and dominance</h3>
@@ -234,7 +236,7 @@ export default function Home() {
                     Following their first triumph, City remained competitive, capturing a second league title in 
                     2013-14 under Manuel Pellegrini. That season, they outscored all teams (102 goals) and finished 
                     with 86 points, two ahead of Liverpool. Players like Yaya Touré (20 league goals), Vincent Kompany, 
-                    and David Silva were instrumental. However, defensive inconsistencies and Chelsea’s resurgence in 
+                    and David Silva were instrumental. However, defensive inconsistencies and Chelsea&apos;s resurgence in 
                     2014-15 prevented a successful title defense.
                 </p>
                 <p className="mt-2">
@@ -281,14 +283,14 @@ export default function Home() {
                     </ComposedChart>
                 </ResponsiveContainer>
             </div>
-            <p className="mt-1 text-center text-white text-sm">Manchester City's record season, Top 8 standings - PL 2017-2018</p>
+            <p className="mt-1 text-center text-white text-sm">Manchester City&apos;s record season, Top 8 standings - PL 2017-2018</p>
         
             <div className="max-w-4xl text-gray-300 text-lg leading-relaxed">
                 <p className="mt-6">
-                    Guardiola's management of Manchester City during the 2017-18 season marked a significant evolution in his 
+                    Guardiola&apos;s management of Manchester City during the 2017-18 season marked a significant evolution in his 
                     tactical approach, particularly through the implementation of tiki-taka principles. This style emphasizes short 
                     passing and movement, maintaining possession, and creating triangles to facilitate fluid attacking play. 
-                    Guardiola's tactical framework was built on a foundation of technical excellence and spatial awareness, fostering 
+                    Guardiola&apos;s tactical framework was built on a foundation of technical excellence and spatial awareness, fostering 
                     a culture where players were encouraged to understand their positional responsibilities deeply. 
                 </p>
             </div>
@@ -321,19 +323,19 @@ export default function Home() {
                 <p>Loading chart...</p>
             )}
             </div>
-            <p className="mt-1 text-center text-white text-sm">Pep Guardiola's "Tiki Taka" and building from the back tactics - PL 2017-2018</p>
+            <p className="mt-1 text-center text-white text-sm">Pep Guardiola&apos;s &ldquo;Tiki Taka&rdquo; and building from the back tactics - PL 2017-2018</p>
 
             <div className="max-w-4xl text-gray-300 text-lg leading-relaxed text-content">
                 <p className="mt-6">
-                    Building from the back was another crucial aspect of Pep Guardiola's tactics. 
-                    This approach, often referred to as "juego de posición" or positional play, emphasizes starting attacks from the 
+                    Building from the back was another crucial aspect of Pep Guardiola&apos;s tactics. 
+                    This approach, often referred to as &ldquo;juego de posición&rdquo; or positional play, emphasizes starting attacks from the 
                     goalkeeper and defenders, maintaining possession, and gradually moving the ball forward through midfield. Here 
                     are some key elements of how Manchester City built from the back:
                 </p>
                 <ul className="list-disc list-inside space-y-1 mt-4">
                     <li>
-                        <span className="font-semibold text-white">Goalkeeper's Role:</span> The signing of Ederson Moraes in the 
-                        summer of 2017 was pivotal. Ederson's exceptional distribution skills allowed him to act as a sweeper-keeper, 
+                        <span className="font-semibold text-white">Goalkeeper&apos;s Role:</span> The signing of Ederson Moraes in the 
+                        summer of 2017 was pivotal. Ederson&apos;s exceptional distribution skills allowed him to act as a sweeper-keeper, 
                         initiating attacks with precise long passes to bypass the press and find midfielders or full-backs in advanced 
                         positions.
                     </li>
@@ -341,7 +343,7 @@ export default function Home() {
                         <span className="font-semibold text-white">Defensive Structure:</span> Manchester City often used a back four, 
                         but Guardiola also experimented with a back three in certain situations. The defenders were tasked with playing 
                         out from the back, using short passes to maintain possession and draw opponents into pressing, which would create 
-                        space for City's midfielders to exploit.
+                        space for City&apos;s midfielders to exploit.
                     </li>
                     <li>
                         <span className="font-semibold text-white">Midfield Control:</span> Players like Kevin De Bruyne and David Silva 
@@ -349,13 +351,13 @@ export default function Home() {
                         creating triangles and ensuring that City maintained possession while progressing the ball forward.
                     </li>
                     <li>
-                        <span className="font-semibold text-white">Pressing Resistance:</span> City's ability to play through high 
+                        <span className="font-semibold text-white">Pressing Resistance:</span> City&apos;s ability to play through high 
                         presses was a significant improvement from the previous season. They developed a more cohesive unit that 
                         could withstand opposition pressure and transition quickly into counter-attacks once possession was regained.
                     </li>
                 </ul>
                 <p className="mt-6">
-                    Manchester City's build-up play was characterized by patience, precision, and a deep understanding of spatial 
+                    Manchester City&apos;s build-up play was characterized by patience, precision, and a deep understanding of spatial 
                     awareness, which allowed them to consistently dominate games and create scoring opportunities.
                 </p>
             </div>

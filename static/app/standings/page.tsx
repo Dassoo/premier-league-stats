@@ -1,17 +1,19 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from 'next/link';
 import { filterStandings } from "@/utils/helpers";
+import { TeamStats } from "@/utils/helpers";
 
 export default function Home() {
-    const [year, setYear] = useState(new Date().getFullYear());
-    const [stats, setStats] = useState([]);
+    const [year] = useState(new Date().getFullYear());
+    const [stats, setStats] = useState<TeamStats[]>([]);
     const [selectedSeason, setSelectedSeason] = useState("2017-2018");
-    const [searchQuery, setSearchQuery] = useState(""); // Team filter
+    const [searchQuery, setSearchQuery] = useState("");
 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/api/stats/data/?season=${selectedSeason}`)
             .then((res) => res.json())
-            .then((data) => {
+            .then((data: TeamStats[]) => {
                 console.log("Received data:", data);
 
                 const updatedData = data.map(team => ({
@@ -35,20 +37,20 @@ export default function Home() {
             <nav className="flex items-center justify-between flex-wrap bg-transparent p-6 w-full max-w-6xl">
                 <div className="flex items-center flex-shrink-0 text-white">
                     <img src="/logos/premier_league.png" alt="Premier League" className="w-20 h-20 object-contain brightness-200" />
-                    <a href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</a>
+                    <Link href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</Link>
                 </div>
 
                 <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                     <div className="text-md lg:flex-grow text-right">
-                        <a href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        <Link href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Standings
-                        </a>
-                        <a href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        </Link>
+                        <Link href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Stats
-                        </a>
-                        <a href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
+                        </Link>
+                        <Link href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
                             Plots
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </nav>
@@ -61,8 +63,8 @@ export default function Home() {
             </div>
             <p className="flex text-gray-300 items-center gap-4 mb-6 max-w-4xl">
                 The Premier League standings from the 2006-2007 to the 2017-2018 seasons showcased an era of shifting power dynamics. 
-                Initially dominated by the "Big Four" (Arsenal, Chelsea, Liverpool, and Manchester United), the league saw the emergence of 
-                Manchester City as a major force, particularly after their title win in the 2011-2012 season. The "Big Six" eventually formed, 
+                Initially dominated by the &ldquo;Big Four&rdquo; (Arsenal, Chelsea, Liverpool, and Manchester United), the league saw the emergence of 
+                Manchester City as a major force, particularly after their title win in the 2011-2012 season. The &ldquo;Big Six&rdquo; eventually formed, 
                 with Tottenham Hotspur joining the fray.
             </p>
 
@@ -143,7 +145,7 @@ export default function Home() {
                             })
                         ) : (
                             <tr>
-                                <td colSpan="10" className="p-6 text-center text-gray-400">Loading data...</td>
+                                <td className="p-6 text-center text-gray-400">Loading data...</td>
                             </tr>
                         )}
                     </tbody>

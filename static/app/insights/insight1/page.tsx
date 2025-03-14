@@ -1,19 +1,20 @@
 "use client";
 import { useState, useEffect } from "react";
+import Link from 'next/link';
 import { ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
 import { CustomDot } from "@/utils/charts";
-import { filterStandings } from "@/utils/helpers";
+import { TeamStats, TooltipProps, filterStandings } from "@/utils/helpers";
 
 export default function Home() {
-    const [year, setYear] = useState(new Date().getFullYear());
-    const [stats, setStats] = useState([]);
-    const [searchQuery, setSearchQuery] = useState("");
-    const [selectedSeason, setSelectedSeason] = useState("2015-2016");
+    const [year] = useState(new Date().getFullYear());
+    const [stats, setStats] = useState<TeamStats[]>([]);
+    const [searchQuery] = useState("");
+    const [selectedSeason] = useState("2015-2016");
 
     useEffect(() => {
         fetch(`http://127.0.0.1:8000/api/stats/data/?season=${selectedSeason}`)
             .then((res) => res.json())
-            .then((data) => {
+            .then((data: TeamStats[]) => {
                 console.log("Received data:", data);
                 setStats(data);
             })
@@ -30,7 +31,7 @@ export default function Home() {
             interceptions: Number(team.interception)
     }));
 
-    const CustomTooltip = ({ active, payload }) => {
+    const CustomTooltip: React.FC<TooltipProps> = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const team = payload[0].payload.team;
             const wins = payload[0].value;
@@ -47,7 +48,7 @@ export default function Home() {
         return null;
     };
 
-    const CustomTooltip2 = ({ active, payload }) => {
+    const CustomTooltip2: React.FC<TooltipProps> = ({ active, payload }) => {
         if (active && payload && payload.length) {
             const team = payload[0].payload.team;
             const tackles = payload[0].value;
@@ -75,20 +76,20 @@ export default function Home() {
             <nav className="flex items-center justify-between flex-wrap bg-transparent p-6 w-full max-w-6xl">
                 <div className="flex items-center flex-shrink-0 text-white">
                     <img src="/logos/premier_league.png" alt="Premier League" className="w-20 h-20 object-contain brightness-200" />
-                    <a href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</a>
+                    <Link href="/" className="font-semibold text-xl tracking-tight hover:text-[#821090] transition">Premier League Stats (2006-2018)</Link>
                 </div>
 
                 <div className="w-full block flex-grow lg:flex lg:items-center lg:w-auto">
                     <div className="text-md lg:flex-grow text-right">
-                        <a href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        <Link href="/standings" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Standings
-                        </a>
-                        <a href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
+                        </Link>
+                        <Link href="/stats" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition mr-6">
                             Stats
-                        </a>
-                        <a href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
+                        </Link>
+                        <Link href="/plots" className="block mt-4 lg:inline-block lg:mt-0 text-white hover:text-[#821090] transition">
                             Plots
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </nav>
@@ -96,11 +97,11 @@ export default function Home() {
             {/* Title */}
             <div className="flex items-center gap-4 mb-3">
                 <h1 className="text-2xl font-bold text-center text-white main-title">
-                    2015-2016: Just an historical success or also a sudden "Big Four" underperform?
+                    2015-2016: Just an historical success or also a sudden &ldquo;Big Four&rdquo; underperform?
                 </h1>
             </div>
             <p className="flex text-gray-300 items-center gap-4 mb-6 max-w-4xl">
-                A brief analysis on Leicester City's sudden rise and downfall.
+                A brief analysis on Leicester City&apos;s sudden rise and downfall.
             </p>
 
             {/* Hero Banner */}
@@ -117,7 +118,7 @@ export default function Home() {
                 <p>
                 The 2015-2016 season will forever be remembered as one of the greatest sporting upsets in history, 
                 as Leicester City won the Premier League title. 
-                But which have been the actual factors that contributed to the small club's remarkable success?
+                But which have been the actual factors that contributed to the small club&apos;s remarkable success?
                 </p>
 
                 <h3 className="text-xl text-white mt-6">Claudio Ranieri and strategic changes</h3>
@@ -132,7 +133,7 @@ export default function Home() {
                 But the Italian manager, appointed in the summer of 2015, did bring international experience and a reputation for 
                 tactical acumen. His leadership played a pivotal role in galvanizing the team and implementing a successful strategy,
                 which was mostly based on building a strong team ethos, with every player contributing to the collective effort, and
-                a very swift and aggressive counter-attack strategy, utilizing their pace and agility to exploit their opponents'
+                a very swift and aggressive counter-attack strategy, utilizing their pace and agility to exploit their opponents&apos;
                 defensive vulnerabilities.
                 </p>
             </div>
@@ -158,7 +159,7 @@ export default function Home() {
                             fontSize: 14
                         }} />
                         <Tooltip content={<CustomTooltip />} cursor={{ strokeDasharray: "3 3" }} />
-                        <Scatter name="Teams" data={seasonData} fill="#8884d8" shape={(props) => <CustomDot {...props} />} />
+                        <Scatter name="Teams" data={seasonData} fill="#8884d8" shape={(props: any) => <CustomDot {...props} />} />
                     </ScatterChart>
                 </ResponsiveContainer>
             ) : (
@@ -198,7 +199,7 @@ export default function Home() {
                             fontSize: 14
                         }} />
                         <Tooltip content={<CustomTooltip2 />} cursor={{ strokeDasharray: "3 3" }} />
-                        <Scatter name="Teams" data={seasonData} fill="#8884d8" shape={(props) => <CustomDot {...props} />} />
+                        <Scatter name="Teams" data={seasonData} fill="#8884d8" shape={(props: any) => <CustomDot {...props} />} />
                     </ScatterChart>
                 </ResponsiveContainer>
             ) : (
@@ -211,7 +212,7 @@ export default function Home() {
                 <p className="mt-8">
                     Leicester City was not just forward aggression, since we should not underestimate its 
                     strong midfield core, being the best filter in the league when it came to deny 
-                    opponent attacks. Among all, surely N'Golo Kantè emerged from the season as one of the 
+                    opponent attacks. Among all, surely N&apos;Golo Kantè emerged from the season as one of the 
                     best and most wanted midfielders in the world.
                 </p>
                 <p className="mt-3">
@@ -222,10 +223,10 @@ export default function Home() {
                 
                 <h3 className="mt-6 text-xl text-white">The other teams</h3>
                 <p className="mt-2">
-                    As we reflect on the standings, Leicester City's title win in the 2015-2016 season was indeed impressive, with the 
+                    As we reflect on the standings, Leicester City&apos;s title win in the 2015-2016 season was indeed impressive, with the 
                     team maintaining a strong lead throughout the campaign. However, if we analyze the data, it becomes clear that the 
-                    larger clubs were only temporarily unable to keep pace with Leicester's momentum. This temporary setback for the 
-                    "Big Six" was evident in the following season, where Leicester struggled to replicate their success.
+                    larger clubs were only temporarily unable to keep pace with Leicester&apos;s momentum. This temporary setback for the 
+                    &ldquo;Big Six&rdquo; was evident in the following season, where Leicester struggled to replicate their success.
                 </p>
             </div>
 
@@ -261,7 +262,7 @@ export default function Home() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan="10" className="p-6 text-center text-gray-400">Loading data...</td>
+                                    <td className="p-6 text-center text-gray-400">Loading data...</td>
                                 </tr>
                             )}
                         </tbody>
@@ -300,7 +301,7 @@ export default function Home() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan="10" className="p-6 text-center text-gray-400">Loading data...</td>
+                                    <td className="p-6 text-center text-gray-400">Loading data...</td>
                                 </tr>
                             )}
                         </tbody>
@@ -313,14 +314,14 @@ export default function Home() {
             <div className="mt-6 max-w-4xl text-gray-300 text-lg leading-relaxed">
                 <p className="mt-2">
                     Following their historic title victory, Leicester City managed to retain most of their key players, except for 
-                    N'Golo Kanté, who was sold to Chelsea for £32 million in the summer of 2016. Kanté's departure was significant, 
-                    as he was a crucial component of Leicester's midfield, known for his tireless work ethic and ability to consistently 
+                    N&apos;Golo Kanté, who was sold to Chelsea for £32 million in the summer of 2016. Kanté&apos;s departure was significant, 
+                    as he was a crucial component of Leicester&apos;s midfield, known for his tireless work ethic and ability to consistently 
                     deliver top performances.
                 </p>
                 <p className="mt-2">
-                    In the 2016-2017 season, the "Big Six" clubs — Manchester City, Manchester United, Liverpool, Chelsea, Arsenal, and 
+                    In the 2016-2017 season, the &ldquo;Big Six&rdquo; clubs — Manchester City, Manchester United, Liverpool, Chelsea, Arsenal, and 
                     Tottenham Hotspur — quickly regained their positions at the top of the Premier League, especially after Chelsea and
-                    Liverpool's downfall:
+                    Liverpool&apos;s downfall:
                 </p>
 
                 <ul className="list-disc list-inside space-y-4 mt-4">
@@ -328,15 +329,15 @@ export default function Home() {
                         <span className="font-semibold text-white">Chelsea</span>, the reigning champions, had a disastrous season, finishing 10th. 
                         This was a stark contrast to their dominant performance in the previous year, where they won the league under José Mourinho. 
                         The team struggled with consistency and form, leading to a managerial change mid-season, with Guus Hiddink taking over after 
-                        Mourinho's departure. In the 2016-2017 season, Chelsea rebounded spectacularly under new manager Antonio Conte. The team adopted a 
-                        3-4-3 formation, which proved highly effective, and they went on to win the Premier League title. The acquisition of N'Golo Kanté 
+                        Mourinho&apos;s departure. In the 2016-2017 season, Chelsea rebounded spectacularly under new manager Antonio Conte. The team adopted a 
+                        3-4-3 formation, which proved highly effective, and they went on to win the Premier League title. The acquisition of N&apos;Golo Kanté 
                         from Leicester City was seen as a crucial factor in this success, as he brought a level of defensive solidity and energy that was missing the previous season.
                     </li>
                     <li>
                         <span className="font-semibold text-white">Liverpool</span> had a mixed season, finishing 8th. They struggled with consistency under Brendan Rodgers, 
                         who was sacked early in the season. Jürgen Klopp took over and brought a new level of intensity and tactical awareness, 
                         but the team still failed to secure a European spot through league standings. Despite not achieving immediate success in terms 
-                        of league position, Klopp's influence was evident in Liverpool's performances. They reached the Europa League final, where 
+                        of league position, Klopp&apos;s influence was evident in Liverpool&apos;s performances. They reached the Europa League final, where 
                         they lost to Sevilla, but the team showed signs of improvement and potential for future growth, which on the long run become able to achieve.
                     </li>
                 </ul>
