@@ -58,6 +58,7 @@ MIDDLEWARE = [
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Communication with React
+    "https://premier-league-stats-gk6r.onrender.com",
 ]
 
 ROOT_URLCONF = 'premier_league_dashboard.urls'
