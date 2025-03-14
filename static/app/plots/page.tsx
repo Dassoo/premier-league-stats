@@ -19,7 +19,7 @@ export default function Plots() {
 
 
     useEffect(() => {
-        fetch(`http://127.0.0.1:8000/api/stats/data/?season=${selectedSeason}`)
+        fetch(`https://premier-league-stats-gk6r.onrender.com/api/stats/data/?season=${selectedSeason}`)
             .then((res) => res.json())
             .then((data: TeamStats[]) => {
                 console.log("Dati ricevuti:", data);
