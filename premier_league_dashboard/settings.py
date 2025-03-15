@@ -17,7 +17,7 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ALLOWED_HOSTS = ['premier-league-stats-gk6r.onrender.com']
+ALLOWED_HOSTS = ['https://premier-league-stats-gk6r.onrender.com']
 
 
 # Quick-start development settings - unsuitable for production
@@ -55,6 +55,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW = True
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Communication with React
