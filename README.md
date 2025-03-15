@@ -13,12 +13,3 @@ Welcome to the **Premier League Stats** website! This platform provides comprehe
 - **Hosting**: Vercel, Render
 - **Data Source**: Kaggle Premier League CSV
 
----
-
-## Feedback & Support
-
-If you encounter any issues or have suggestions for improvement:
-- Open an issue on our [GitHub repository](#).
-- Contact us via email at support@premierleaguestats.com.
-
-Thank you for visiting Premier League Stats! Enjoy exploring the world of football with us!
