@@ -13,3 +13,4 @@ Welcome to the **Premier League Stats** website! This platform provides comprehe
 - **Hosting**: Vercel, Render
 - **Data Source**: Kaggle Premier League CSV
 
+Note: initial backend responsiveness may not be the quickest due to hosting free plan.
