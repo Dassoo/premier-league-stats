@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 import dj_database_url
 import os
 from pathlib import Path
+from dotenv import load_dotenv, find_dotenv
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,12 +25,11 @@ ALLOWED_HOSTS = ['https://premier-league-stats-gk6r.onrender.com', 'premier-leag
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-nqantu11hilcge9u9%zo$+*bv(1nt^bhf(56)@mb^y)&dl-mff'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
+load_dotenv(find_dotenv())
+SECRET_KEY = os.environ['SECRET_KEY_']
 
 # Application definition
 
