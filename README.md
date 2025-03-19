@@ -5,7 +5,7 @@
 ---
 
 ## 📊 Overview  
-A data-driven web application analyzing Premier League statistics, providing insights into team performance, player metrics, and historical trends.  
+A data-driven web application analyzing Premier League statistics, providing insights into team performance and historical trends.  
 
 ---
 
