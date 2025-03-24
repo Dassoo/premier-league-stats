@@ -14,10 +14,10 @@ A data-driven web application analyzing Premier League statistics, providing ins
 ## 🛠️ Tech Stack  
 | **Category**       | **Tools**                                                                 |
 |---------------------|--------------------------------------------------------------------------|
-| **Frontend**        | React, TypeScript, Tailwind CSS                                          |
-| **Backend**         | Next.js, API Routes                                                     |
-| **Data**            | Premier League Kaggle CSV, PostgreSQL                                   |
-| **Deployment**      | Vercel                                                                  |
+| **Frontend**        | Next.js, TypeScript, TailwindCSS                                          |
+| **Backend**         | Django                                                                  |
+| **Data**            | Premier League Kaggle CSV, PostgreSQL/SQLite                            |
+| **Deployment**      | Vercel, Render                                                          |
 
 ---
 
