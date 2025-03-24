@@ -2,6 +2,8 @@
 ![Premier League Stats Banner](plbanner.png)  
 **Live Demo**: [premier-league-stats-sigma.vercel.app](https://premier-league-stats-sigma.vercel.app/)  
 
+Note: The data may be quite slow to load given the free plan for the backend...
+
 ---
 
 ## 📊 Overview  
