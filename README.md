@@ -15,8 +15,8 @@ A data-driven web application analyzing Premier League statistics, providing ins
 | **Category**       | **Tools**                                                                 |
 |---------------------|--------------------------------------------------------------------------|
 | **Frontend**        | Next.js, TypeScript, TailwindCSS                                          |
-| **Backend**         | Django                                                                  |
-| **Data**            | Premier League Kaggle CSV, PostgreSQL/SQLite                            |
+| **Backend**         | Django, PostgreSQL/SQLite                                                |
+| **Data**            | Premier League Kaggle CSV                                               |
 | **Deployment**      | Vercel, Render                                                          |
 
 ---
